@@ -4,6 +4,8 @@ from sortedcontainers import SortedSet
 
 from .exceptions import IllegalLogAction
 
+import itertools
+
 
 class TraceLog(MutableMapping):
     """Representation of a trace log. Works like a base python dict,
@@ -82,6 +84,19 @@ class TraceLog(MutableMapping):
                     pairs[(ai, aj)] = 0
 
                 pairs[(ai, aj)] += 1 * self[trace]
+
+        return pairs
+
+    def never_together(self):
+        """Returns a list of tuple [("a", "b"), ..., ("y", "z")] of the activities 
+        which are never together in any of the traces"""
+
+        pairs = list(itertools.combinations(self.__labels, r=2))
+
+        for trace in self.__traces:
+            trace = sorted(trace)
+            tup_trace = list(itertools.combinations(trace, r=2))
+            pairs = [x for x in pairs if x not in tup_trace]
 
         return pairs
 

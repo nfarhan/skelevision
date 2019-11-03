@@ -118,6 +118,35 @@ class TestTraceLog(object):
         with pytest.raises(ValueError):
             tl.successors(distance=-3.3)
 
+    def test_never_together(self):
+        """test function for never_together"""
+
+        d = {
+            ("a", "b", "c"): 2,
+            ("b", "c", "a"): 1,
+            ("a", "c"): 1,
+            ("f", "a"): 1,
+            ("a",): 2
+        }
+        res = [("b", "f"), ("c", "f")]
+        
+        tl = TraceLog(d)
+        res_tl = tl.never_together()
+
+        for tup in res_tl:
+            assert tup in res
+
+    # def test_never_together_l1(self):
+
+    #     # tl = TraceLog(d)
+    #     tl = TraceLog.from_txt(os.path.join(DATA, "L1.txt"))
+    #     res = [("a7", ("a8"))]
+
+    #     res_tl = tl.never_together()
+
+    #     for tup in res_tl:
+    #         assert tup in res
+
     def test_from_txt(self):
         tl = TraceLog.from_txt(os.path.join(DATA, "L2.txt"))
         target = {
